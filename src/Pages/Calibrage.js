@@ -3,7 +3,9 @@ import React, {
 } from 'react';
 
 import {Button} from "react-bootstrap";
-class Dashboard extends Component {
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+class Calibrage extends Component {
 
 
     constructor(props) {
@@ -11,12 +13,12 @@ class Dashboard extends Component {
         
                 super(props);
                 this.geteyes = this.geteyes.bind(this);
-                this.continue = this.continue.bind(this);
                 this.hostname = 'http://127.0.0.1:5000'
                 //this.hostname = 'https://c90f8be03a89.ngrok.io'
                 this.state = {
                     gaze_status : "None",
-                
+                    gaze_instructions : ["Blinking", "Looking left", "Looking right", "Looking center","Blinking"],
+                    index : 0
                 };
         
             }
@@ -36,37 +38,33 @@ class Dashboard extends Component {
         }).then(res => res.json())
             .then( 
             (data) => {
+                
                 this.setState({
                     gaze_status: data.gaze_status
                 });     
+                if (this.state.index < 5){
+                if (this.state.gaze_status === this.state.gaze_instructions[this.state.index]){
+                  
+                    this.setState({
+                        index: this.state.index + 1
+                        });
+                    }
+                    
+                }else{
+                    NotificationManager.success('Good','', 5000);
+                    this.setState({
+                        index: 0
+                        });
+                    
+                }
             })
             .catch(console.log)
-             setTimeout(this.geteyes, 800);
+            setTimeout(this.geteyes, 800);
+           
            
 
     }
 
-
-
-  
-    continue(){
-        this.setState({
-            continue: !this.state.continue
-        });
-        //console.log(this.state.continue)
-
-        if (this.state.continue){
-            this.setState({
-                status: "Pause",
-            });
-            this.geteyes();
-        }
-        else{
-            this.setState({
-                status: "Track"
-            });
-        }
-    }
 
 
     componentDidMount() {
@@ -82,36 +80,28 @@ class Dashboard extends Component {
             .then( 
             (data) => {
                 
-                 /*  this.setState({
+                this.setState({
                     gaze_status: data.gaze_status
-                });*/
+                });
                 console.log(data);                
             })
             .catch(console.log)
 
-           setTimeout(this.geteyes, 1000);
+           setTimeout(this.geteyes, 800);
     }
 
 
     render() {
         return(
             <div className="" style={{marginTop:'5%',float: 'left', width: '100%', paddingLeft:'20%'}} id="repositories">
-            <div style={{textAlign: 'left'}}><p style={{fontSize: '1.8rem'}}>Dashboard</p></div>
-
-
-                
-            <p  style={{fontSize: '0.8rem'}}>
+            <div style={{textAlign: 'left'}}><p style={{fontSize: '1.8rem'}}>Calibration : {this.state.gaze_instructions[this.state.index]} </p></div>
+            <p  style={{fontSize: '1.5rem', color : 'yellow'}}>
                 {this.state.gaze_status} </p>
-               
-
-            
-
-            
+                <NotificationContainer/>
             </div>
-
         );
     }
 }
 
-export default Dashboard;
+export default Calibrage;
 
