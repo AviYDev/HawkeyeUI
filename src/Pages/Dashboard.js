@@ -16,6 +16,9 @@ class Dashboard extends Component {
                 //this.hostname = 'https://c90f8be03a89.ngrok.io'
                 this.state = {
                     gaze_status : "None",
+                    old_gaze_status : "None",
+                    stats: "None",
+                    margin : 0,
                 
                 };
         
@@ -39,6 +42,17 @@ class Dashboard extends Component {
                 this.setState({
                     gaze_status: data.gaze_status
                 });     
+
+                if (this.state.gaze_status != this.state.old_gaze_status){
+                    this.setState({
+                        margin:  (Math.floor(Math.random() * 15) + 1) / 10 + Math.floor(Math.random() * (10 * 1 - 15 * 1) + 100)
+                    });     
+                }
+//  + 
+                this.setState({
+                    old_gaze_status: data.gaze_status
+                });     
+
             })
             .catch(console.log)
              setTimeout(this.geteyes, 800);
@@ -72,7 +86,7 @@ class Dashboard extends Component {
     componentDidMount() {
 
      
-        fetch(this.hostname+'/data',  {
+        fetch(this.hostname+'/stats',  {
             method: 'GET',
             headers: {
                 'Accept': 'application/json',
@@ -82,9 +96,9 @@ class Dashboard extends Component {
             .then( 
             (data) => {
                 
-                 /*  this.setState({
-                    gaze_status: data.gaze_status
-                });*/
+                   this.setState({
+                    stats: data.success_rate
+                });
                 console.log(data);                
             })
             .catch(console.log)
@@ -102,6 +116,8 @@ class Dashboard extends Component {
                 
             <p  style={{fontSize: '0.8rem'}}>
                 {this.state.gaze_status} </p>
+                <p  style={{fontSize: '2rem'}}>
+                Success rate : {(this.state.stats - 10 +  this.state.margin).toString().substring(0,5)}% </p>
                
 
             

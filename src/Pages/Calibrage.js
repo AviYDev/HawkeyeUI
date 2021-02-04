@@ -60,16 +60,10 @@ class Calibrage extends Component {
             })
             .catch(console.log)
             setTimeout(this.geteyes, 800);
-           
-           
-
     }
 
 
-
-    componentDidMount() {
-
-     
+    componentDidMount() {     
         fetch(this.hostname+'/data',  {
             method: 'GET',
             headers: {
